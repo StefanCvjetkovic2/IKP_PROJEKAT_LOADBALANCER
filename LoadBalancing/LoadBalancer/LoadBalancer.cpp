@@ -137,7 +137,7 @@ int main() {
             printf("%d ", clientData->numbers[i]);
         }
         printf("\n");
-        printf("%d", number);
+        
 
         enqueue(ClientQueue, create_queue_element(clientData->clientName,clientData->numbers,number ));
 

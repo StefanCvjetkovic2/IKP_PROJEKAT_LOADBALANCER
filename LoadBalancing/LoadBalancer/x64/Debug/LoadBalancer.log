@@ -1,2 +1,4 @@
-﻿  ClientCommunication.cpp
+﻿  LoadBalancer.cpp
+  QueueClient.cpp
+  Generating Code...
   LoadBalancer.vcxproj -> C:\Users\NewUser\Desktop\IKP_PROJEKAT\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\LoadBalancer.exe

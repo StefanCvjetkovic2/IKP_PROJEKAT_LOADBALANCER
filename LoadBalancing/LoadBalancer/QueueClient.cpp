@@ -103,7 +103,7 @@ void print_queue(QUEUE* q) {
         for (int i = 0; i < q->currentSize; i++) {
             int index = (q->front + i) % q->capacity;
             cout << "Client: " << q->elements[index].clientName << ", Data: ";
-            // Sada koristimo dataSize
+        
             for (int j = 0; j < q->elements[index].dataSize; j++) {
                 cout << q->elements[index].data[j] << " ";
             }

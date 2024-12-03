@@ -21,7 +21,7 @@
     <ClCompile Include="ClientCommunication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="queue.cpp">
+    <ClCompile Include="QueueClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClInclude Include="ClientCommunication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="queue.h">
+    <ClInclude Include="QueueClinet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

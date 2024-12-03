@@ -1,7 +1,2 @@
-﻿  queue.cpp
-C:\Users\NewUser\Desktop\Projekat_IKP\LoadBalancing\LoadBalancer\queue.cpp(9,1): warning C4005: 'BUFFER_SIZE': macro redefinition
-  C:\Users\NewUser\Desktop\Projekat_IKP\LoadBalancing\LoadBalancer\queue.h(8,1):
-  see previous definition of 'BUFFER_SIZE'
-  
-C:\Users\NewUser\Desktop\Projekat_IKP\LoadBalancing\LoadBalancer\queue.cpp(52,6): warning C4551: function call missing argument list
-  LoadBalancer.vcxproj -> C:\Users\NewUser\Desktop\Projekat_IKP\LoadBalancing\x64\Debug\LoadBalancer.exe
+﻿  ClientCommunication.cpp
+  LoadBalancer.vcxproj -> C:\Users\NewUser\Desktop\IKP_PROJEKAT\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\LoadBalancer.exe

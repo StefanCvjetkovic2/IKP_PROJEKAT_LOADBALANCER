@@ -115,16 +115,16 @@ void delete_queue() {
 	CloseHandle(hSemaporeQueueEmpty);
 	CloseHandle(hSemaporeQueueFull);
 }
-
-void print_queue() {
-	printf("\n QUEUE: ");
-	for (int i = q->front; q->messageArray[i] != NULL;) {
-		if (i == q->capacity)
-			i = i % q->capacity;
-
-		printf(" %s->%s", q->messageArray[i]->clientName, q->messageArray[i]->bufferNoName);
-		if (i == q->rear)break;
-		++i;
-	}
-	printf("\n");
-}
+//
+//void print_queue() {
+//	printf("\n QUEUE: ");
+//	for (int i = q->front; q->messageArray[i] != NULL;) {
+//		if (i == q->capacity)
+//			i = i % q->capacity;
+//
+//		printf(" %s->%s", q->messageArray[i]->clientName, q->messageArray[i]->bufferNoName);
+//		if (i == q->rear)break;
+//		++i;
+//	}
+//	printf("\n");
+//}

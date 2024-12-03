@@ -1,240 +1,159 @@
-﻿#include "clientcommunication.h"
-#include <iostream>
+﻿#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#include <time.h>
+#include "QueueClinet.h"
+//#include "queue.h"
+#pragma comment(lib, "Ws2_32.lib")
 
+QUEUE* ClientQueue = NULL;
 
+typedef struct {
+    char clientName[50];
+    int* numbers;
+    
+} QUEUEELEMENT2;
 
-auto& cout = std::cout;
-
-int main() {
-    // Inicijalizacija WinSock-a
-    if (!initializeWinSock()) {
-        return 1;
+void generateRandomNumbers(int* numbers, int size, int min, int max) {
+    for (int i = 0; i < size; i++) {
+        numbers[i] = rand() % (max - min + 1) + min;
     }
-
-    // Kreiranje i podešavanje server soketa za klijente
-    SOCKET serverSocket = setupClientSocket();
-    if (serverSocket == INVALID_SOCKET) {
-        cleanupWinSock();
-        return 1;
-    }
-
-    // Prihvatanje klijentske konekcije
-    SOCKET clientSocket = acceptClient(serverSocket);
-    if (clientSocket == INVALID_SOCKET) {
-        closesocket(serverSocket);
-        cleanupWinSock();
-        return 1;
-    }
-
-    // Primanje podataka od klijenta
-    int receivedNumber;
-    while (true) {
-        int bytesReceived = receiveFromClient(clientSocket, receivedNumber);
-        if (bytesReceived == SOCKET_ERROR || bytesReceived == 0) {
-            cout << "Client disconnected\n";
-            break;
-        }
-
-        cout << "Received from client: " << receivedNumber << "\n";
-    }
-
-    // Zatvaranje klijentskog soketa
-    closeClientSocket(clientSocket);
-
-    // Zatvaranje server soketa i čišćenje resursa
-    closesocket(serverSocket);
-    cleanupWinSock();
-
-    return 0;
 }
 
+int main() {
+    WSADATA wsaData;
+    SOCKET serverSocket, clientSocket;
+    struct sockaddr_in serverAddress, clientAddress;
+    int clientAddressSize = sizeof(clientAddress);
+    ClientQueue = init_queue(10);
+
+    // Inicijalizacija Winsock-a
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
+        fprintf(stderr, "WSA Initialization Failed\n");
+        return EXIT_FAILURE;
+    }
+
+    // Kreiranje soketa
+    serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (serverSocket == INVALID_SOCKET) {
+        fprintf(stderr, "Failed to create socket\n");
+        WSACleanup();
+        return EXIT_FAILURE;
+    }
+
+    // Konfigurisanje server adrese
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(5059);
+    serverAddress.sin_addr.s_addr = INADDR_ANY;
+
+    // Bindovanje soketa
+    if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
+        fprintf(stderr, "Bind failed\n");
+        closesocket(serverSocket);
+        WSACleanup();
+        return EXIT_FAILURE;
+    }
+
+    // Slušanje konekcija
+    if (listen(serverSocket, 5) < 0) {
+        fprintf(stderr, "Listen failed\n");
+        closesocket(serverSocket);
+        WSACleanup();
+        return EXIT_FAILURE;
+    }
+
+    printf("Load Balancer is listening on port 5059...\n");
+
+    // Prihvatanje klijentske konekcije
+    clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddress, &clientAddressSize);
+    if (clientSocket == INVALID_SOCKET) {
+        fprintf(stderr, "Failed to accept client connection\n");
+        closesocket(serverSocket);
+        WSACleanup();
+        return EXIT_FAILURE;
+    }
+
+    printf("Client connected\n");
+    int brojac = 0;
+    while (true) {
+        // Prima broj od klijenta
+        int number;
+        if (recv(clientSocket, (char*)&number, sizeof(number), 0) > 0) {
+            printf("Received number from client: %d\n", number);
+        }
+        else {
+            fprintf(stderr, "Failed to receive number\n");
+            closesocket(clientSocket);
+            WSACleanup();
+            return EXIT_FAILURE;
+        }
+
+        // Prima opseg brojeva (min i max)
+        int min, max;
+        if (recv(clientSocket, (char*)&min, sizeof(min), 0) > 0 &&
+            recv(clientSocket, (char*)&max, sizeof(max), 0) > 0) {
+            printf("Received range from client: %d - %d\n", min, max);
+        }
+        else {
+            fprintf(stderr, "Failed to receive range\n");
+            closesocket(clientSocket);
+            WSACleanup();
+            return EXIT_FAILURE;
+        }
+       
+        // Kreira i popunjava dinamički bafer
+        //QUEUEELEMENT2 *clientData;
+        
+        QUEUEELEMENT2* clientData = (QUEUEELEMENT2*)malloc(sizeof(QUEUEELEMENT2));
+
+        if (clientData == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            return EXIT_FAILURE;
+        }
+
+        snprintf(clientData->clientName, sizeof(clientData->clientName), "Client %d", brojac++); // Ime klijenta
+        
+        clientData->numbers = (int*)malloc(number * sizeof(int)); // Dinamički alociran bafer
 
 
+        if (clientData->numbers == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            closesocket(clientSocket);
+            WSACleanup();
+            return EXIT_FAILURE;
+        }
+       
 
+        // Popunjava bafer sa slučajnim brojevima
+        generateRandomNumbers(clientData->numbers, number, min, max);
+        
+        
+       
+        // Ispisivanje brojeva u baferu
+        printf("Client %d generated numbers: ", number);
+        for (int i = 0; i < number; i++) {
+            printf("%d ", clientData->numbers[i]);
+        }
+        printf("\n");
+        printf("%d", number);
 
+        enqueue(ClientQueue, create_queue_element(clientData->clientName,clientData->numbers,number ));
 
+        print_queue(ClientQueue);
+       
 
+        // Oslobađanje memorije
+        free(clientData->numbers);
 
+        
 
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//#include <iostream>
-//#include <winsock2.h>
-//#include <ws2tcpip.h>
-//#include <vector>
-//#include <thread>
-//#include <mutex>
-//
-//#pragma comment(lib, "ws2_32.lib")
-//
-//auto& cout = std::cout;
-//
-//#define SERVER_PORT 8080
-//#define WORKER_PORT 8081
-//#define BUFFER_SIZE 4
-//
-//std::vector<SOCKET> workers; // Lista Worker soketa
-//std::mutex workerMutex;      // Mutex za bezbedan pristup listi Workera
-//
-//// Funkcija za rukovanje konekcijama sa Workerima
-//void acceptWorkers(SOCKET workerSocket) {
-//    sockaddr_in workerClientAddr{};
-//    int workerClientAddrSize = sizeof(workerClientAddr);
-//
-//    while (true) {
-//        SOCKET workerClientSocket = accept(workerSocket, (sockaddr*)&workerClientAddr, &workerClientAddrSize);
-//        if (workerClientSocket == INVALID_SOCKET) {
-//            cout << "Failed to accept worker connection\n";
-//            continue;
-//        }
-//
-//        // Dodavanje novog Workera u listu
-//        {
-//            std::lock_guard<std::mutex> lock(workerMutex);
-//            workers.push_back(workerClientSocket);
-//        }
-//        cout << "Worker connected. Total workers: " << workers.size() << "\n";
-//    }
-//}
-//
-//int main() {
-//    WSADATA wsaData;
-//    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-//        cout << "WSAStartup failed\n";
-//        return 1;
-//    }
-//
-//    // Kreiranje TCP soketa za Load Balancer
-//    SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-//    if (serverSocket == INVALID_SOCKET) {
-//        cout << "Socket creation failed\n";
-//        WSACleanup();
-//        return 1;
-//    }
-//
-//    // Konfiguracija adrese Load Balancera za klijente
-//    sockaddr_in serverAddr{};
-//    serverAddr.sin_family = AF_INET;
-//    serverAddr.sin_port = htons(SERVER_PORT);
-//    serverAddr.sin_addr.s_addr = INADDR_ANY;
-//
-//    // Bindovanje i slušanje za klijente
-//    if (bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
-//        cout << "Bind failed\n";
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//    if (listen(serverSocket, SOMAXCONN) < 0) {
-//        cout << "Listen failed\n";
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//    cout << "Load Balancer is listening for clients on port " << SERVER_PORT << "\n";
-//
-//    // Kreiranje TCP soketa za Workere
-//    SOCKET workerSocket = socket(AF_INET, SOCK_STREAM, 0);
-//    if (workerSocket == INVALID_SOCKET) {
-//        cout << "Worker socket creation failed\n";
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//
-//    // Konfiguracija adrese za Workere
-//    sockaddr_in workerAddr{};
-//    workerAddr.sin_family = AF_INET;
-//    workerAddr.sin_port = htons(WORKER_PORT);
-//    workerAddr.sin_addr.s_addr = INADDR_ANY;
-//
-//    // Bindovanje i slušanje za Workere
-//    if (bind(workerSocket, (sockaddr*)&workerAddr, sizeof(workerAddr)) < 0) {
-//        cout << "Worker bind failed\n";
-//        closesocket(workerSocket);
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//    if (listen(workerSocket, SOMAXCONN) < 0) {
-//        cout << "Worker listen failed\n";
-//        closesocket(workerSocket);
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//    cout << "Load Balancer is listening for workers on port " << WORKER_PORT << "\n";
-//
-//    // Startovanje niti za prihvatanje Workera
-//    std::thread workerThread(acceptWorkers, workerSocket);
-//    workerThread.detach();
-//
-//    // Prihvatanje klijentske konekcije
-//    sockaddr_in clientAddr{};
-//    int clientAddrSize = sizeof(clientAddr);
-//    SOCKET clientSocket = accept(serverSocket, (sockaddr*)&clientAddr, &clientAddrSize);
-//    if (clientSocket == INVALID_SOCKET) {
-//        cout << "Failed to accept client connection\n";
-//        closesocket(workerSocket);
-//        closesocket(serverSocket);
-//        WSACleanup();
-//        return 1;
-//    }
-//    cout << "Client connected\n";
-//
-//    // Primanje podataka od klijenta i prosleđivanje Workerima
-//    int receivedNumber;
-//    while (true) {
-//        int bytesReceived = recv(clientSocket, reinterpret_cast<char*>(&receivedNumber), BUFFER_SIZE, 0);
-//        if (bytesReceived == SOCKET_ERROR || bytesReceived == 0) {
-//            cout << "Client disconnected\n";
-//            break;
-//        }
-//
-//        cout << "Received from client: " << receivedNumber << "\n";
-//
-//        // Prosleđivanje primljenog broja Workerima
-//        std::lock_guard<std::mutex> lock(workerMutex);
-//        for (auto it = workers.begin(); it != workers.end(); ) {
-//            int sendResult = send(*it, reinterpret_cast<char*>(&receivedNumber), sizeof(receivedNumber), 0);
-//            if (sendResult == SOCKET_ERROR) {
-//                cout << "Worker disconnected\n";
-//                closesocket(*it);
-//                it = workers.erase(it); // Ukloni Workera ako je prekinuo vezu
-//            }
-//            else {
-//                cout << "Forwarded to worker\n";
-//                ++it;
-//            }
-//        }
-//    }
-//
-//    // Zatvaranje svih soketa i čišćenje resursa
-//    {
-//        std::lock_guard<std::mutex> lock(workerMutex);
-//        for (auto& worker : workers) {
-//            closesocket(worker);
-//        }
-//    }
-//    closesocket(clientSocket);
-//    closesocket(serverSocket);
-//    closesocket(workerSocket);
-//    WSACleanup();
-//
-//    return 0;
-//}
+    // Zatvaranje soketa
+    closesocket(clientSocket);
+    closesocket(serverSocket);
+    WSACleanup();
+    return EXIT_SUCCESS;
+}

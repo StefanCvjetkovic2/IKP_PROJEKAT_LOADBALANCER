@@ -4,7 +4,15 @@
 #include <string.h>
 
 int main() {
-    startWorker();
+
+    HANDLE hWorkerToLoadBalancer;
+    DWORD hWorkerToLoadBalancerID;
+
+    hWorkerToLoadBalancer = CreateThread(NULL, 0, &startWorker, (LPVOID)0, 0, &hWorkerToLoadBalancerID);
+
+    if (hWorkerToLoadBalancer)
+        WaitForSingleObject(hWorkerToLoadBalancer, INFINITE);
+
     printf("Uspjesno povezan");
     return 0;
 }

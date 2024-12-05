@@ -3,7 +3,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 // Deklaracija funkcija
-void startLoadBalancer();
+DWORD WINAPI startLoadBalancer(LPVOID param);
 void initializeWinsock();
 SOCKET createServerSocket(int port);
 void bindAndListen(SOCKET serverSocket, int backlog);

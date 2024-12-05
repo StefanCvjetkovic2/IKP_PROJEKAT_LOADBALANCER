@@ -13,7 +13,7 @@ void generateRandomNumbers(int* numbers, int size, int min, int max) {
     }
 }
 
-void startServer() {
+DWORD WINAPI startServer(LPVOID param) {
     WSADATA wsaData;
     SOCKET serverSocket, clientSocket;
     struct sockaddr_in serverAddress, clientAddress;

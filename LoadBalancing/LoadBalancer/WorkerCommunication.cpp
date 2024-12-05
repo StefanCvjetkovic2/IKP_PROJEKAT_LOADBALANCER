@@ -80,7 +80,7 @@ void handleWorkerCommunication(SOCKET workerSocket) {
 }
 
 // Glavna funkcija za Load Balancer
-void startLoadBalancer() {
+DWORD WINAPI startLoadBalancer(LPVOID param) {
     initializeWinsock();
 
     SOCKET serverSocket = createServerSocket(5060); // Port Load Balancera

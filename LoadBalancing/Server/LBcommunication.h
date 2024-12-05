@@ -4,7 +4,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 // Deklaracija funkcija
-void startWorker();
+DWORD WINAPI startWorker(LPVOID param);
 void initializeWinsock();
 SOCKET createWorkerSocket();
 void connectToLoadBalancer(SOCKET workerSocket, const char* lbAddress, int lbPort);

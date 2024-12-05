@@ -12,4 +12,4 @@ typedef struct {
 
 // Deklaracija funkcija
 void generateRandomNumbers(int* numbers, int size, int min, int max);
-void startServer();
+DWORD WINAPI startServer(LPVOID param);

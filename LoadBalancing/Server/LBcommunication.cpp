@@ -54,7 +54,7 @@ void handleCommunication(SOCKET workerSocket) {
 }
 
 // Glavna funkcija koja poziva manje funkcije
-void startWorker() {
+DWORD WINAPI startWorker(LPVOID param) {
     initializeWinsock();
 
     SOCKET workerSocket = createWorkerSocket();

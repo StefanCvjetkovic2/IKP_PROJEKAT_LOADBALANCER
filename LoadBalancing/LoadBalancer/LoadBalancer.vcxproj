@@ -130,10 +130,12 @@
     <ClCompile Include="LoadBalancer.cpp" />
     <ClCompile Include="ClientCommunication.cpp" />
     <ClCompile Include="QueueClient.cpp" />
+    <ClCompile Include="WorkerCommunication.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientCommunication.h" />
     <ClInclude Include="QueueClinet.h" />
+    <ClInclude Include="WorkerCommunication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

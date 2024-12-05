@@ -1,4 +1,6 @@
-﻿  LoadBalancer.cpp
-  QueueClient.cpp
+﻿  ClientCommunication.cpp
+  LoadBalancer.cpp
+  WorkerCommunication.cpp
+C:\Users\NewUser\Desktop\IKP_PROJEKAT\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\LoadBalancer\WorkerCommunication.cpp(71,43): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
   Generating Code...
   LoadBalancer.vcxproj -> C:\Users\NewUser\Desktop\IKP_PROJEKAT\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\LoadBalancer.exe

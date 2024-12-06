@@ -129,9 +129,11 @@
   <ItemGroup>
     <ClCompile Include="LBcommunication.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="WorkerQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LBcommunication.h" />
+    <ClInclude Include="Queue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,5 +12,7 @@ void connectToLoadBalancer(SOCKET workerSocket, const char* lbAddress, int lbPor
 void handleCommunication(SOCKET workerSocket);
 DWORD WINAPI addToQueue(LPVOID lpParam);
 DWORD WINAPI loadBalancerThread1(LPVOID lpParam);
+DWORD WINAPI loadBalancerThread2(LPVOID lpParam);
+DWORD WINAPI workerRole(LPVOID lpParam);
 void deserializeQueueElement(char* buffer, QUEUEELEMENT* q);
 

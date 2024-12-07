@@ -101,6 +101,7 @@ DWORD WINAPI startLoadBalancer(LPVOID param) {
     while (true) {
         
         handleWorkerCommunication(workerSocket);
+        
     }
 
     // Zatvaranje serverskog soketa

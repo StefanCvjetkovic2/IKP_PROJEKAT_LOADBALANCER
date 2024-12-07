@@ -65,7 +65,7 @@ QUEUEELEMENT* dequeue(QUEUE* q) {
     EnterCriticalSection(&q->cs);  // Ulazi u kritičnu sekciju
 
     if (is_queue_empty(q)) {
-        cout << "Queue is empty!" << endl;
+        cout << "Queue is empty!\n" << endl;
         LeaveCriticalSection(&q->cs);  // Odlazi iz kritične sekcije
         return nullptr;  // Vraća NULL ako je red prazan
     }

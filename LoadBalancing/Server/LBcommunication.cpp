@@ -1,4 +1,4 @@
-#include "LBcommunication.h"
+﻿#include "LBcommunication.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +7,7 @@
 using namespace std;
 
 #define THREAD_POOL_SIZE 100
+#define SAFE_DELETE_HANDLE(a) if(a){CloseHandle(a);} 
 
 HANDLE hAddToQueueSemaphore;
 HANDLE hLoadBalancerThread1Semaphore;
@@ -16,6 +17,7 @@ HANDLE hThreadPoolThread[THREAD_POOL_SIZE];
 
 
 QUEUE* queue = NULL;
+CRITICAL_SECTION QueueCS;
 
 // niz zauzetih worker role-a
 bool busyThreads[THREAD_POOL_SIZE];
@@ -77,14 +79,14 @@ void handleCommunication(SOCKET workerSocket) {
         
         enqueue(queue, create_queue_element(q.clientName, q.data, q.dataSize));
 
-        // Process the received QUEUEELEMENT (e.g., print its contents)
-        printf("Client Name: %s\n", q.clientName);
-        printf("Data Size: %d\n", q.dataSize);
-        for (int i = 0; i < q.dataSize; i++) {
-            printf("Data[%d]: %d\n", i, q.data[i]);
-        }
+     
 
         print_queue(queue);
+       
+       
+        int v = get_current_size_queue(queue);
+        printf("\nCurrent_size_queue %d\n",v);
+       
 
         // Free the allocated memory for clientName and data
         free(q.clientName);
@@ -104,7 +106,7 @@ DWORD WINAPI startWorker(LPVOID param) {
     SOCKET workerSocket = createWorkerSocket();
     connectToLoadBalancer(workerSocket, "127.0.0.1", 5060); // Local IP address and Load Balancer port
 
-    queue = init_queue(10);
+   
     
     while (true) {
         // Main worker loop (add relevant code or logic here)
@@ -116,33 +118,158 @@ DWORD WINAPI startWorker(LPVOID param) {
     WSACleanup();
 }
 
+QUEUE* workerQueues[THREAD_POOL_SIZE];
 
-/*DWORD WINAPI addToQueue(LPVOID lpParam) {
-    QUEUEELEMENT* element = (QUEUEELEMENT*)lpParam;
+DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
+    const int INITIAL_WORKER_THREADS = 10;  // Početni broj niti
+    const int MAX_QUEUE_CAPACITY = 2;      // Maksimalna veličina reda
 
-    while (true) {
-        WaitForSingleObject(hAddToQueueSemaphore, INFINITE);
+    InitializeCriticalSection(&QueueCS); // Inicijalizacija kritične sekcije
 
-        // Ensure that queue is initialized
-        if (queue == NULL) {
-            fprintf(stderr, "Queue is not initialized.\n");
-            continue;
+    int numOfWorkerRoles = 0;
+
+    // Inicijalizacija početnih niti i njihovih redova
+    for (int i = 0; i < INITIAL_WORKER_THREADS; i++) {
+        hThreadPoolSemaphore[i] = CreateSemaphore(0, 0, 1, NULL);
+        hThreadPoolSemaphoreFinish[i] = CreateSemaphore(0, 0, 1, NULL);
+
+        workerQueues[i] = init_queue(MAX_QUEUE_CAPACITY);
+        if (workerQueues[i] == NULL) {
+            printf("Failed to initialize queue for worker %d.\n", i);
+            exit(1);
         }
 
-        // Add the element to the queue
-        enqueue(queue, create_queue_element(element->clientName, element->data, element->dataSize));
-        print_queue(queue);
+        HANDLE hThreadPoolThread = CreateThread(
+            NULL, 0, &workerRole, (LPVOID)i, 0, NULL);
 
-        // Free the allocated memory for clientName and data (if not needed anymore)
-        free(element->clientName);
-        free(element->data);
-        free(element);
+        busyThreads[i] = false;
+        numOfWorkerRoles++;
+    }
 
-        ReleaseSemaphore(hLoadBalancerThread1Semaphore, 1, NULL);
+    // Glavna petlja balansiranja
+    while (true) {
+        EnterCriticalSection(&QueueCS); // Zaštita pristupa globalnom redu
+        int globalQueueSize = get_current_size_queue(queue);
+        LeaveCriticalSection(&QueueCS);
+
+        if (globalQueueSize > 0) {
+            QUEUEELEMENT* task = dequeue(queue);
+
+            bool taskAssigned = false;
+            for (int i = 0; i < numOfWorkerRoles; i++) {
+                if (get_current_size_queue(workerQueues[i]) < MAX_QUEUE_CAPACITY) {
+                    EnterCriticalSection(&QueueCS);
+                    enqueue(workerQueues[i], task);
+                    LeaveCriticalSection(&QueueCS);
+
+                    ReleaseSemaphore(hThreadPoolSemaphore[i], 1, NULL);
+                    taskAssigned = true;
+                    break;
+                }
+            }
+
+            // Kreiraj novu nit ako nijedna nije dostupna
+            if (!taskAssigned && numOfWorkerRoles < THREAD_POOL_SIZE) {
+                hThreadPoolSemaphore[numOfWorkerRoles] = CreateSemaphore(0, 0, 1, NULL);
+                hThreadPoolSemaphoreFinish[numOfWorkerRoles] = CreateSemaphore(0, 0, 1, NULL);
+
+                workerQueues[numOfWorkerRoles] = init_queue(MAX_QUEUE_CAPACITY);
+                if (workerQueues[numOfWorkerRoles] == NULL) {
+                    printf("Failed to initialize queue for new worker %d.\n", numOfWorkerRoles);
+                    exit(1);
+                }
+
+                HANDLE hThreadPoolThread = CreateThread(
+                    NULL, 0, &workerRole, (LPVOID)numOfWorkerRoles, 0, NULL);
+
+                EnterCriticalSection(&QueueCS);
+                enqueue(workerQueues[numOfWorkerRoles], task);
+                LeaveCriticalSection(&QueueCS);
+
+                ReleaseSemaphore(hThreadPoolSemaphore[numOfWorkerRoles], 1, NULL);
+                numOfWorkerRoles++;
+            }
+        }
+
+        Sleep(1000);
+    }
+
+    DeleteCriticalSection(&QueueCS); // Oslobađanje kritične sekcije
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+DWORD WINAPI workerRole(LPVOID lpParam) {
+    int n = (int)lpParam;
+
+    if (n < 0 || n >= THREAD_POOL_SIZE) {
+        printf("Invalid thread index: %d\n", n);
+        return -1;
+    }
+
+    if (workerQueues[n] == NULL) {
+        printf("Error: workerQueues[%d] is not initialized.\n", n);
+        return -1;
+    }
+
+    HANDLE semaphores[] = { hThreadPoolSemaphoreFinish[n], hThreadPoolSemaphore[n] };
+
+    while (true) {
+        DWORD waitResult = WaitForMultipleObjects(2, semaphores, FALSE, INFINITE);
+
+        if (waitResult == WAIT_OBJECT_0) {
+            break; // Završni signal
+        }
+
+        while (true) {
+            EnterCriticalSection(&QueueCS);
+            QUEUEELEMENT* task = dequeue(workerQueues[n]);
+            LeaveCriticalSection(&QueueCS);
+
+            if (!task) {
+                break; // Red je prazan
+            }
+
+            int sum = 0;
+            for (int i = 0; i < task->dataSize; i++) {
+                sum += task->data[i];
+            }
+
+            printf("Worker %d processed data for client '%s'. Sum: %d\n", n, task->clientName, sum);
+            Sleep(20000);
+
+            free(task->data);
+            free(task->clientName);
+            free(task);
+        }
+
+        EnterCriticalSection(&QueueCS);
+        if (is_queue_empty(workerQueues[n])) {
+            busyThreads[n] = false;
+        }
+        LeaveCriticalSection(&QueueCS);
     }
 
     return 0;
-}*/
+}
+
+
+
+
+
+
+
+
+
+
+
 
 DWORD WINAPI loadBalancerThread1(LPVOID lpParam) {
     while (true) {

@@ -28,6 +28,10 @@ typedef struct {
     QUEUEELEMENT* elements;  // Niz elemenata reda
 } QUEUE;  // Ne zaboravite ta?ku i zarez na kraju definicije strukture
 
+
+extern QUEUE* queue;
+
+
 // Funkcije za rad sa redom
 QUEUE* init_queue(int capacity);  // Kreira red sa datim kapacitetom
 int is_queue_full(QUEUE* q);      // Proverava da li je red pun

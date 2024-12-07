@@ -1,8 +1,11 @@
 #include "WorkerCommunication.h"
-
+#include "ClientCommunication.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "QueueClinet.h"
+
+
 
 // Inicijalizacija Winsock-a
 void initializeWinsock() {
@@ -67,17 +70,26 @@ SOCKET acceptWorkerConnection(SOCKET serverSocket) {
 
 // Rukovanje komunikacijom sa Workerom
 void handleWorkerCommunication(SOCKET workerSocket) {
-    const char* message = "Welcome, Worker!";
-    if (send(workerSocket, message, strlen(message), 0) < 0) {
-        fprintf(stderr, "Failed to send message to Worker\n");
-    }
-    else {
-        printf("Message sent to Worker: %s\n", message);
-    }
+    if (ClientQueue->currentSize > 0) {
+        QUEUEELEMENT* q = dequeue(ClientQueue);
 
-    // Zatvaranje konekcije sa Workerom
-    closesocket(workerSocket);
+        char* buffer;
+        int bufferSize;
+        serializeQueueElement(q, &buffer, &bufferSize);
+
+        if (send(workerSocket, buffer, bufferSize, 0) < 0) {
+            fprintf(stderr, "Failed to send message to Worker\n");
+        }
+        else {
+            printf("Message sent to Worker\n");
+        }
+
+        free(buffer);
+        // Close the connection with the Worker
+        //closesocket(workerSocket);
+    }
 }
+
 
 // Glavna funkcija za Load Balancer
 DWORD WINAPI startLoadBalancer(LPVOID param) {
@@ -85,9 +97,9 @@ DWORD WINAPI startLoadBalancer(LPVOID param) {
 
     SOCKET serverSocket = createServerSocket(5060); // Port Load Balancera
     bindAndListen(serverSocket, 5);
-
+    SOCKET workerSocket = acceptWorkerConnection(serverSocket);
     while (true) {
-        SOCKET workerSocket = acceptWorkerConnection(serverSocket);
+        
         handleWorkerCommunication(workerSocket);
     }
 
@@ -95,3 +107,29 @@ DWORD WINAPI startLoadBalancer(LPVOID param) {
     closesocket(serverSocket);
     WSACleanup();
 }
+
+void serializeQueueElement(QUEUEELEMENT* q, char** buffer, int* bufferSize) {
+    // Calculate the size needed for the buffer
+    int clientNameLen = strlen(q->clientName) + 1; // +1 for the null terminator
+    int dataSize = q->dataSize * sizeof(int);
+    *bufferSize = sizeof(int) + clientNameLen + sizeof(int) + dataSize + sizeof(int);
+
+    // Allocate the buffer
+    *buffer = (char*)malloc(*bufferSize);
+    char* ptr = *buffer;
+
+    // Serialize the clientName length and clientName
+    int nameLen = clientNameLen;
+    memcpy(ptr, &nameLen, sizeof(int));
+    ptr += sizeof(int);
+    memcpy(ptr, q->clientName, clientNameLen);
+    ptr += clientNameLen;
+
+    // Serialize the data size and data array
+    int dataLen = q->dataSize;
+    memcpy(ptr, &dataLen, sizeof(int));
+    ptr += sizeof(int);
+    memcpy(ptr, q->data, dataSize);
+    ptr += dataSize;
+}
+

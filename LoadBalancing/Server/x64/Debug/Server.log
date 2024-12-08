@@ -1,6 +1,10 @@
 ﻿  LBcommunication.cpp
-C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(143,35): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
-C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(183,43): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
-C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(210,13): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'int'
-C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(210,13): warning C4302: 'type cast': truncation from 'LPVOID' to 'int'
+C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(147,35): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
+C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(187,43): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
+C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(214,13): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'int'
+C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(214,13): warning C4302: 'type cast': truncation from 'LPVOID' to 'int'
+  QueueResult.cpp
+  Server.cpp
+  WorkerQueue.cpp
+  Generating Code...
   Server.vcxproj -> C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Server.exe

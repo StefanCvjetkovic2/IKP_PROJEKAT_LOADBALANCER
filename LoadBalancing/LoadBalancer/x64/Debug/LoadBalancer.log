@@ -1,3 +1,2 @@
-﻿  WorkerCommunication.cpp
-C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\LoadBalancer\WorkerCommunication.cpp(114,23): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+﻿  QueueClient.cpp
   LoadBalancer.vcxproj -> C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\LoadBalancer.exe

@@ -66,7 +66,7 @@ void connectToLoadBalancer(SOCKET workerSocket, const char* lbAddress, int lbPor
 
 // Rukovanje komunikacijom sa Load Balancer-om
 void handleCommunication(SOCKET workerSocket) {
-    char buffer[1024] = { 0 };
+    char buffer[4096] = { 0 };
 
     // Receive the message from the Load Balancer
     int receivedBytes = recv(workerSocket, buffer, sizeof(buffer), 0);
@@ -118,7 +118,11 @@ DWORD WINAPI startWorker(LPVOID param) {
     WSACleanup();
 }
 
+
+
+
 QUEUE* workerQueues[THREAD_POOL_SIZE];
+QUEUER* ResultsQueue;
 
 DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
     const int INITIAL_WORKER_THREADS = 10;  // Početni broj niti
@@ -127,7 +131,7 @@ DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
     InitializeCriticalSection(&QueueCS); // Inicijalizacija kritične sekcije
 
     int numOfWorkerRoles = 0;
-
+    ResultsQueue = init_queue2(30);
     // Inicijalizacija početnih niti i njihovih redova
     for (int i = 0; i < INITIAL_WORKER_THREADS; i++) {
         hThreadPoolSemaphore[i] = CreateSemaphore(0, 0, 1, NULL);
@@ -241,8 +245,16 @@ DWORD WINAPI workerRole(LPVOID lpParam) {
             for (int i = 0; i < task->dataSize; i++) {
                 sum += task->data[i];
             }
+            QUEUEELEMENTRESULT* resultData = (QUEUEELEMENTRESULT*)malloc(sizeof(QUEUEELEMENTRESULT));
+            resultData->clientName = task->clientName;
+            resultData->result = sum;
+            enqueue2(ResultsQueue, create_queue_element2(resultData->clientName, resultData->result));
+         
+            
+           
 
             printf("Worker %d processed data for client '%s'. Sum: %d\n", n, task->clientName, sum);
+            print_queue2(ResultsQueue);
             Sleep(20000);
 
             free(task->data);

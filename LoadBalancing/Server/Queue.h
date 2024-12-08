@@ -7,10 +7,6 @@
 #include <windows.h>
 
 // Struktura za element reda
-//typedef struct {
-//    char* clientName;  // Ime klijenta
-//    char* data;        // Podaci koji se ?uvaju u redu
-//} QUEUEELEMENT;
 
 typedef struct {
     char* clientName;  // Ime klijenta
@@ -26,10 +22,11 @@ typedef struct {
     int front, rear, currentSize;  // Indeksi fronta, rear-a i trenutna veli?ina reda
     int capacity;  // Kapacitet reda
     QUEUEELEMENT* elements;  // Niz elemenata reda
-} QUEUE;  // Ne zaboravite ta?ku i zarez na kraju definicije strukture
+} QUEUE;  
 
 
 extern QUEUE* queue;
+
 
 
 // Funkcije za rad sa redom

@@ -127,7 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClientQueue.cpp" />
+    <ClCompile Include="ClientWorkerCommunication.cpp" />
     <ClCompile Include="Clinet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ClientQueue.h" />
+    <ClInclude Include="ClientWorkerCommunication.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

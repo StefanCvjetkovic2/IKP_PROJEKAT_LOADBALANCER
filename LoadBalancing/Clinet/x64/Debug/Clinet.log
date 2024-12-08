@@ -1,3 +1,4 @@
-﻿  Clinet.cpp
-  LINK : C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Clinet.exe not found or not built by the last incremental link; performing full link
-  Clinet.vcxproj -> C:\Users\NewUser\Desktop\Dobar_IKP\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Clinet.exe
+﻿  ClientWorkerCommunication.cpp
+  Clinet.cpp
+  Generating Code...
+  Clinet.vcxproj -> C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Clinet.exe

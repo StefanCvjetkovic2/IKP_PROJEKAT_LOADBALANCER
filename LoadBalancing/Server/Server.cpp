@@ -1,4 +1,5 @@
 ﻿#include "LBcommunication.h"
+#include "WorkerClientCommunication.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,16 +13,23 @@ int main() {
 
     HANDLE hLoadBalancerThread2;
 
-    queue = init_queue(10);
+    HANDLE hWorkerToClient;
+    DWORD WorkerToClientID;
 
+    queue = init_queue(10);
+    //startWorkerToClient
 
     hWorkerToLoadBalancer = CreateThread(NULL, 0, &startWorker, (LPVOID)0, 0, &hWorkerToLoadBalancerID);
     hLoadBalancerThread2 = CreateThread(NULL, 0, &loadBalancerThread2, NULL, 0, &loadBalancerThread2ID);
+    hWorkerToClient = CreateThread(NULL, 0, &startWorkerToClient, NULL, 0, &loadBalancerThread2ID);
 
 
 
     if (hWorkerToLoadBalancer)
         WaitForSingleObject(hWorkerToLoadBalancer, INFINITE);
+
+    if (hWorkerToClient)
+        WaitForSingleObject(hWorkerToClient, INFINITE);
 
     printf("Uspjesno povezan");
     return 0;

@@ -3,10 +3,18 @@
 #include <string.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include "ClientWorkerCommunication.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 
-int main() {
+
+
+int main() {    
+
+    HANDLE hClientServer;
+    DWORD hClientServerID;
+    hClientServer = CreateThread(NULL, 0, &startClient, (LPVOID)0, 0, &hClientServerID);
+
     WSADATA wsaData;
     SOCKET clientSocket;
     struct sockaddr_in serverAddress;
@@ -94,5 +102,9 @@ int main() {
     // Zatvaranje soketa
     closesocket(clientSocket);
     WSACleanup();
-    return EXIT_SUCCESS;
+
+    
+
+
+    return EXIT_SUCCESS;   
 }

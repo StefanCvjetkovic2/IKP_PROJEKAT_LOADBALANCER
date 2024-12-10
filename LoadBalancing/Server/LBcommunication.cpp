@@ -15,6 +15,7 @@ HANDLE hThreadPoolSemaphore[THREAD_POOL_SIZE];
 HANDLE hThreadPoolSemaphoreFinish[THREAD_POOL_SIZE];
 HANDLE hThreadPoolThread[THREAD_POOL_SIZE];
 
+SOCKET workerSocket = NULL;
 
 QUEUE* queue = NULL;
 CRITICAL_SECTION QueueCS;
@@ -94,7 +95,9 @@ void handleCommunication(SOCKET workerSocket) {
 
     }
     else {
-        fprintf(stderr, "Failed to receive message from Load Balancer\n");
+        //fprintf(stderr, "Failed to receive message from Load Balancer\n");
+        closesocket(workerSocket);
+        WSACleanup();
     }
 
 }
@@ -103,7 +106,7 @@ void handleCommunication(SOCKET workerSocket) {
 DWORD WINAPI startWorker(LPVOID param) {
     initializeWinsock();
 
-    SOCKET workerSocket = createWorkerSocket();
+    workerSocket = createWorkerSocket();
     connectToLoadBalancer(workerSocket, "127.0.0.1", 5060); // Local IP address and Load Balancer port
 
    

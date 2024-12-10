@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AdminCommunication.cpp" />
     <ClCompile Include="LBcommunication.cpp" />
     <ClCompile Include="QueueResult.cpp" />
     <ClCompile Include="Server.cpp" />
@@ -134,6 +135,7 @@
     <ClCompile Include="WorkerQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AdminCommunication.h" />
     <ClInclude Include="LBcommunication.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="QueueResult.h" />

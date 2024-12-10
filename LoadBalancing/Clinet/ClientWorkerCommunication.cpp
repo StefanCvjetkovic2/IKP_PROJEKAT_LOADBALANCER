@@ -70,7 +70,7 @@ void handleCommunication(SOCKET clientSocket) {
 
     }
     else {
-        fprintf(stderr, "Failed to receive message from Server\n");
+        //fprintf(stderr, "Failed to receive message from Server\n");
     }
 
 }

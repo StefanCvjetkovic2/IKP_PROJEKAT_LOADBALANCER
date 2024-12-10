@@ -5,6 +5,8 @@
 #include "QueueResult.h"
 #pragma comment(lib, "Ws2_32.lib")
 
+extern SOCKET workerSocket;
+
 // Deklaracija funkcija
 DWORD WINAPI startWorker(LPVOID param);
 void initializeWinsock();

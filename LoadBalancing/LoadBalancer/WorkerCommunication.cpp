@@ -68,8 +68,9 @@ SOCKET acceptWorkerConnection(SOCKET serverSocket) {
     return workerSocket;
 }
 
-// Rukovanje komunikacijom sa Workerom
+// Handle communication with Worker
 void handleWorkerCommunication(SOCKET workerSocket) {
+    // Send message to Worker if there's data in the queue
     if (ClientQueue->currentSize > 0) {
         QUEUEELEMENT* q = dequeue(ClientQueue);
 
@@ -85,10 +86,38 @@ void handleWorkerCommunication(SOCKET workerSocket) {
         }
 
         free(buffer);
-        // Close the connection with the Worker
-        //closesocket(workerSocket);
+    }
+
+    char buffer2[4096] = { 0 };
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(workerSocket, &readfds);
+    struct timeval timeout = { 0, 100000 };  // Timeout na 100 ms
+    int activity = select(0, &readfds, NULL, NULL, &timeout);
+    if (activity > 0 && FD_ISSET(workerSocket, &readfds)) {
+        int receivedBytes = recv(workerSocket, buffer2, sizeof(buffer2) - 1, 0);
+        if (receivedBytes > 0) {
+            buffer2[receivedBytes] = '\0'; // Null-terminate the received string
+            printf("Message received from Worker: %s\n", buffer2);
+
+            // Check if the message indicates stopping operations
+            if (strcmp(buffer2, "Operations have been stopped by Admin") == 0) {
+                printf("Received stop message from Worker. Closing connection.\n");
+
+                // Close the worker socket and clean up
+                closesocket(workerSocket);
+                //WSACleanup(); //Ako nije komentarisano onda nema komunikacije sa clientom, ako je komentarisano i dalje postoji komunikacija sa clientom
+                //exit(EXIT_SUCCESS); // Exit the program or handle accordingly
+            }
+        }
+        else {
+            // Error occurred in recv
+            fprintf(stderr, "Failed to receive message from Worker\n");
+        }
     }
 }
+
+
 
 
 // Glavna funkcija za Load Balancer
@@ -98,12 +127,11 @@ DWORD WINAPI startLoadBalancer(LPVOID param) {
     SOCKET serverSocket = createServerSocket(5060); // Port Load Balancera
     bindAndListen(serverSocket, 5);
     SOCKET workerSocket = acceptWorkerConnection(serverSocket);
-    while (true) {
-        
-        handleWorkerCommunication(workerSocket);
-        
-    }
 
+    while (true) {
+        handleWorkerCommunication(workerSocket);
+        //handleWorkerCommunicationReceive(workerSocket);
+    }
     // Zatvaranje serverskog soketa
     closesocket(serverSocket);
     WSACleanup();

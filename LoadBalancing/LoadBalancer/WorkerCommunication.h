@@ -10,4 +10,5 @@ SOCKET createServerSocket(int port);
 void bindAndListen(SOCKET serverSocket, int backlog);
 SOCKET acceptWorkerConnection(SOCKET serverSocket);
 void handleWorkerCommunication(SOCKET workerSocket);
+void handleWorkerCommunicationReceive(SOCKET workerSocket);
 void serializeQueueElement(QUEUEELEMENT* q, char** buffer, int* bufferSize);

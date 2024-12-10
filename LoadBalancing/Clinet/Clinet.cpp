@@ -9,7 +9,7 @@
 
 
 
-int main() {    
+int main() {
 
     HANDLE hClientServer;
     DWORD hClientServerID;
@@ -55,41 +55,51 @@ int main() {
 
     while (true) {
         // Slanje broja serveru
-        int number;
-        printf("Enter a number to send to Load Balancer: ");
-        scanf_s("%d", &number);
 
-        if (send(clientSocket, (char*)&number, sizeof(number), 0) == SOCKET_ERROR) {
-            fprintf(stderr, "Failed to send number\n");
-            closesocket(clientSocket);
-            WSACleanup();
-            return EXIT_FAILURE;
+        char input[10];
+        printf(" >> Enter a number to send to Load Balancer or 'r' for results: <<  ");
+        scanf_s("%s", input, (unsigned)_countof(input)); // Koristimo string za unos
+
+        if (strcmp(input, "r") == 0 || strcmp(input, "R") == 0) {
+
+            print_queue2(queue);
         }
-        printf("Number %d sent to Load Balancer\n", number);
+        else {
+            // Pretpostavlja se da je unet broj
+            int number = atoi(input);
 
-        // Slanje opsega za generisanje brojeva
-        int min, max;
-        while (true) {
-            printf("Enter the range (min max) for the random numbers: ");
-            scanf_s("%d %d", &min, &max);
 
-            if (min >= max) {
-                printf("Error: Min should be less than Max. Please try again.\n");
+            if (send(clientSocket, (char*)&number, sizeof(number), 0) == SOCKET_ERROR) {
+                fprintf(stderr, "Failed to send number\n");
+                closesocket(clientSocket);
+                WSACleanup();
+                return EXIT_FAILURE;
             }
-            else {
-                break;  // Ako je unos validan, izlazimo iz petlje
+            printf("Number %d sent to Load Balancer\n", number);
+
+            // Slanje opsega za generisanje brojeva
+            int min, max;
+            while (true) {
+                printf("Enter the range (min max) for the random numbers: ");
+                scanf_s("%d %d", &min, &max);
+
+                if (min >= max) {
+                    printf("Error: Min should be less than Max. Please try again.\n");
+                }
+                else {
+                    break;  // Ako je unos validan, izlazimo iz petlje
+                }
             }
-        }
 
-        if (send(clientSocket, (char*)&min, sizeof(min), 0) == SOCKET_ERROR ||
-            send(clientSocket, (char*)&max, sizeof(max), 0) == SOCKET_ERROR) {
-            fprintf(stderr, "Failed to send range\n");
-            closesocket(clientSocket);
-            WSACleanup();
-            return EXIT_FAILURE;
+            if (send(clientSocket, (char*)&min, sizeof(min), 0) == SOCKET_ERROR ||
+                send(clientSocket, (char*)&max, sizeof(max), 0) == SOCKET_ERROR) {
+                fprintf(stderr, "Failed to send range\n");
+                closesocket(clientSocket);
+                WSACleanup();
+                return EXIT_FAILURE;
+            }
+            printf("Range (%d, %d) sent to Load Balancer\n", min, max);
         }
-        printf("Range (%d, %d) sent to Load Balancer\n", min, max);
-
         int s;
         getchar();  // Potrošnja novog reda pre unosa
         printf("Stop input -1 :  ");
@@ -103,8 +113,8 @@ int main() {
     closesocket(clientSocket);
     WSACleanup();
 
-    
 
 
-    return EXIT_SUCCESS;   
+
+    return EXIT_SUCCESS;
 }

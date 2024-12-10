@@ -53,7 +53,7 @@ void handleCommunication(SOCKET clientSocket) {
     // Receive the message from the server
     int receivedBytes = recv(clientSocket, buffer, sizeof(buffer), 0);
     if (receivedBytes > 0) {
-        printf("Message received from Server\n");
+        //printf("Message received from Server\n");
 
         QUEUEELEMENTRESULT q;
         deserializeQueueElementResult(buffer, &q);
@@ -62,8 +62,8 @@ void handleCommunication(SOCKET clientSocket) {
         enqueue2(queue, create_queue_element2(q.clientName, q.result));
 
 
-        printf("Results recieved from workers:\n ");
-        print_queue2(queue);
+       // printf("Results recieved from workers:\n ");
+        //print_queue2(queue);
 
         // Free the allocated memory for clientName
         free(q.clientName);

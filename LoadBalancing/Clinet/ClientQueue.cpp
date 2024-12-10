@@ -88,13 +88,13 @@ void print_queue2(QUEUER* q) {
     EnterCriticalSection(&q->cs);
 
     if (is_queue_empty2(q)) {
-        cout << "Queue is empty!" << endl;
+        cout << "The results have not yet been processed" << endl;
     }
     else {
-        cout << "Queue contents:" << endl;
+        cout <<endl<< "Results:" << endl;
         for (int i = 0; i < q->currentSize; i++) {
             int index = (q->front + i) % q->capacity;
-            cout << "Client: " << q->elements[index].clientName
+            cout << q->elements[index].clientName
                 << ", Result: " << q->elements[index].result << endl;
         }
     }

@@ -20,8 +20,7 @@ typedef struct {
     QUEUEELEMENTRESULT* elements;  // Niz elemenata reda
 } QUEUER;
 
-
-extern QUEUER* ResultsQueue;
+extern QUEUER* queue;
 
 // Funkcije za rad sa redom
 QUEUER* init_queue2(int capacity);  // Kreira red sa datim kapacitetom

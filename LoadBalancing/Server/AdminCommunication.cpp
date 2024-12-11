@@ -6,7 +6,8 @@
 #include "LBcommunication.h"
 using namespace std;
 
-
+int newQueueSize = 0;
+bool queueSizeChanged = false;
 
 // Inicijalizacija Winsock-a
 void initializeWinsock3() {
@@ -55,6 +56,8 @@ void handleCommunicationToAdmin(SOCKET adminSocket, SOCKET loadBalancerSocket) {
         if (receivedBytes > 0) {
             buffer[receivedBytes] = '\0'; // Null-terminate the received string
             printf("Message received from Admin: %s\n", buffer);
+
+            // Check if the message is "q" to stop the operations
             if (strcmp(buffer, "q") == 0) {
                 // Send "Operations have been stopped by Admin" message to Load Balancer
                 const char* stopMessage = "Operations have been stopped by Admin";
@@ -63,6 +66,25 @@ void handleCommunicationToAdmin(SOCKET adminSocket, SOCKET loadBalancerSocket) {
 
                 printf("Closing connection as requested by Admin.\n");
                 break;
+            }
+
+            // Check if the message is a number
+            bool isNumber = true;
+            for (size_t i = 0; i < strlen(buffer); ++i) {
+                if (!isdigit(buffer[i])) {
+                    isNumber = false;
+                    queueSizeChanged = false;
+                    break;
+                }
+            }
+
+            if (isNumber) {
+                queueSizeChanged = true;
+                newQueueSize = atoi(buffer);
+                printf("New queue size updated to: %d\n", newQueueSize);
+            }
+            else {
+                printf("Invalid input received. Please send an integer or 'q' to quit.\n");
             }
         }
         else {
@@ -76,6 +98,7 @@ void handleCommunicationToAdmin(SOCKET adminSocket, SOCKET loadBalancerSocket) {
     closesocket(loadBalancerSocket);
     WSACleanup();
 }
+
 
 // Glavna funkcija koja poziva manje funkcije
 DWORD WINAPI startWorkerToAdmin(LPVOID param) {

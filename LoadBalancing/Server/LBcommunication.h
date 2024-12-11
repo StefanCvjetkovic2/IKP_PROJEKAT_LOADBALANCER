@@ -6,6 +6,8 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 extern SOCKET workerSocket;
+extern int newQueueSize;
+extern bool queueSizeChanged;
 
 // Deklaracija funkcija
 DWORD WINAPI startWorker(LPVOID param);

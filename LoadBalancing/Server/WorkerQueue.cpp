@@ -177,3 +177,29 @@ QUEUEELEMENT* create_queue_element(const char* clientName, int* data, int dataSi
     return newElement;
 }
 
+// Funkicja za promjenu velicine reda
+int resize_queue(QUEUE* queue, int new_capacity) {
+    EnterCriticalSection(&queue->cs);  // Enter critical section
+
+    // Allocate new array with new capacity
+    QUEUEELEMENT* new_elements = (QUEUEELEMENT*)malloc(new_capacity * sizeof(QUEUEELEMENT));
+    if (!new_elements) {
+        LeaveCriticalSection(&queue->cs);  // Leave critical section
+        return -1;  // Failed to allocate memory
+    }
+
+    // Copy existing elements to the new array
+    for (int i = 0; i < queue->currentSize; i++) {
+        new_elements[i] = queue->elements[(queue->front + i) % queue->capacity];
+    }
+
+    // Free the old array and update the queue structure
+    free(queue->elements);
+    queue->elements = new_elements;
+    queue->capacity = new_capacity;
+    queue->front = 0;
+    queue->rear = queue->currentSize - 1;  // Rear should be the last element index
+
+    LeaveCriticalSection(&queue->cs);  // Leave critical section
+    return 0;  // Successfully resized the queue
+}

@@ -40,3 +40,4 @@ int get_current_size_queue(QUEUE* q);  // Vra?a trenutnu veli?inu reda
 int get_capacity_queue(QUEUE* q);    // Vra?a kapacitet reda
 void delete_queue(QUEUE* q);       // Briše red i osloba?a memoriju
 QUEUEELEMENT* create_queue_element(const char* clientName, int* data, int dataSize);
+int resize_queue(QUEUE* queue, int new_capacity);

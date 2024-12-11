@@ -128,17 +128,18 @@ QUEUE* workerQueues[THREAD_POOL_SIZE];
 QUEUER* ResultsQueue;
 
 DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
-    const int INITIAL_WORKER_THREADS = 10;  // Početni broj niti
-    const int MAX_QUEUE_CAPACITY = 2;      // Maksimalna veličina reda
+    const int INITIAL_WORKER_THREADS = 10;  // Initial number of threads
+    int MAX_QUEUE_CAPACITY = 2;             // Initial max queue capacity
 
-    InitializeCriticalSection(&QueueCS); // Inicijalizacija kritične sekcije
+    InitializeCriticalSection(&QueueCS);    // Initialize critical section
 
-    int numOfWorkerRoles = 0;
+    numOfWorkerRoles = 0;
     ResultsQueue = init_queue2(30);
-    // Inicijalizacija početnih niti i njihovih redova
+
+    // Initialize initial threads and their queues
     for (int i = 0; i < INITIAL_WORKER_THREADS; i++) {
-        hThreadPoolSemaphore[i] = CreateSemaphore(0, 0, 1, NULL);
-        hThreadPoolSemaphoreFinish[i] = CreateSemaphore(0, 0, 1, NULL);
+        hThreadPoolSemaphore[i] = CreateSemaphore(NULL, 0, 1, NULL);
+        hThreadPoolSemaphoreFinish[i] = CreateSemaphore(NULL, 0, 1, NULL);
 
         workerQueues[i] = init_queue(MAX_QUEUE_CAPACITY);
         if (workerQueues[i] == NULL) {
@@ -153,9 +154,25 @@ DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
         numOfWorkerRoles++;
     }
 
-    // Glavna petlja balansiranja
+    // Main balancing loop
     while (true) {
-        EnterCriticalSection(&QueueCS); // Zaštita pristupa globalnom redu
+        if (queueSizeChanged) {
+            // Resize all existing worker queues
+            for (int i = 0; i < numOfWorkerRoles; i++) {
+                if (resize_queue(workerQueues[i], newQueueSize) != 0) {
+                    printf("Failed to resize queue for worker %d.\n", i);
+                }
+                else {
+                    printf("Resized queue for worker %d to new size %d.\n", i, newQueueSize);
+                }
+            }
+
+            // Update MAX_QUEUE_CAPACITY for new queues
+            MAX_QUEUE_CAPACITY = newQueueSize;
+            queueSizeChanged = false;
+        }
+
+        EnterCriticalSection(&QueueCS); // Protect access to global queue
         int globalQueueSize = get_current_size_queue(queue);
         LeaveCriticalSection(&QueueCS);
 
@@ -175,10 +192,10 @@ DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
                 }
             }
 
-            // Kreiraj novu nit ako nijedna nije dostupna
+            // Create a new thread if none are available and pool size limit is not reached
             if (!taskAssigned && numOfWorkerRoles < THREAD_POOL_SIZE) {
-                hThreadPoolSemaphore[numOfWorkerRoles] = CreateSemaphore(0, 0, 1, NULL);
-                hThreadPoolSemaphoreFinish[numOfWorkerRoles] = CreateSemaphore(0, 0, 1, NULL);
+                hThreadPoolSemaphore[numOfWorkerRoles] = CreateSemaphore(NULL, 0, 1, NULL);
+                hThreadPoolSemaphoreFinish[numOfWorkerRoles] = CreateSemaphore(NULL, 0, 1, NULL);
 
                 workerQueues[numOfWorkerRoles] = init_queue(MAX_QUEUE_CAPACITY);
                 if (workerQueues[numOfWorkerRoles] == NULL) {
@@ -201,10 +218,9 @@ DWORD WINAPI loadBalancerThread2(LPVOID lpParam) {
         Sleep(1000);
     }
 
-    DeleteCriticalSection(&QueueCS); // Oslobađanje kritične sekcije
+    DeleteCriticalSection(&QueueCS); // Release critical section
     return 0;
 }
-
 
 
 

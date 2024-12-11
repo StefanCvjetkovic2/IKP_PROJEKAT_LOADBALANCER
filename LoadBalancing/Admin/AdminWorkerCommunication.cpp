@@ -65,10 +65,17 @@ SOCKET acceptWorkerConnection(SOCKET serverSocket) {
 }
 
 // Rukovanje komunikacijom sa Workerom
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <ctype.h>
+#include <winsock2.h>
+
 void handleWorkerCommunication(SOCKET workerSocket) {
     char buffer[4096];
     while (true) {
-        printf("Enter message to send to Worker (q to quit): ");
+        printf("Enter an integer number to send to Worker (q to quit): ");
         fgets(buffer, sizeof(buffer), stdin);
 
         // Remove newline character at the end if present
@@ -77,22 +84,35 @@ void handleWorkerCommunication(SOCKET workerSocket) {
             buffer[len - 1] = '\0';
         }
 
-        if (send(workerSocket, buffer, len, 0) < 0) {
-            fprintf(stderr, "Failed to send message to Worker\n");
-        }
-        else {
-            printf("Message sent to Worker\n");
-        }
-
+        // Check if the input is 'q' or a valid integer
+        bool isValid = true;
         if (strcmp(buffer, "q") == 0) {
             printf("Closing connection with Worker\n");
             break;
         }
         else {
-            printf("Wrong input, please send 'q' to quit.\n");
+            for (size_t i = 0; i < len - 1; i++) {
+                if (!isdigit(buffer[i])) {
+                    isValid = false;
+                    break;
+                }
+            }
+        }
+
+        if (isValid) {
+            if (send(workerSocket, buffer, len, 0) < 0) {
+                fprintf(stderr, "Failed to send message to Worker\n");
+            }
+            else {
+                printf("Message sent to Worker\n");
+            }
+        }
+        else {
+            printf("Wrong input, please send an integer or 'q' to quit.\n");
         }
     }
 }
+
 
 // Glavna funkcija za Load Balancer
 DWORD WINAPI startAdmin(LPVOID param) {

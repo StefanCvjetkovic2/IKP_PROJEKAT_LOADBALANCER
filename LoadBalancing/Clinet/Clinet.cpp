@@ -102,7 +102,7 @@ int main() {
         }
         int s;
         getchar();  // Potrošnja novog reda pre unosa
-        printf("Stop input -1 :  ");
+        //printf("Stop input -1 :  ");
         scanf_s("%d", &s);
         if (s == -1) {
             break;

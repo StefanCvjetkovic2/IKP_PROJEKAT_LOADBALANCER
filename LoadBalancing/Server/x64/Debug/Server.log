@@ -1,6 +1,16 @@
-﻿  LBcommunication.cpp
-C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(151,35): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
-C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(207,43): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
-C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(233,13): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'int'
-C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(233,13): warning C4302: 'type cast': truncation from 'LPVOID' to 'int'
-  Server.vcxproj -> C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Server.exe
+﻿  AdminCommunication.cpp
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\AdminCommunication.cpp(64,61): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  LBcommunication.cpp
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(151,35): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(207,43): warning C4312: 'type cast': conversion from 'int' to 'LPVOID' of greater size
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(233,13): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'int'
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp(233,13): warning C4302: 'type cast': truncation from 'LPVOID' to 'int'
+  QueueResult.cpp
+  Server.cpp
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\Server.cpp(18,11): warning C4101: 'WorkerToClientID': unreferenced local variable
+  WorkerClientCommunication.cpp
+C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\WorkerClientCommunication.cpp(112,17): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  WorkerQueue.cpp
+  Generating Code...
+  LINK : C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Server.exe not found or not built by the last incremental link; performing full link
+  Server.vcxproj -> C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Server.exe

@@ -76,23 +76,56 @@ void handleCommunication(SOCKET clientSocket) {
 }
 
 // Glavna funkcija koja poziva manje funkcije
+//DWORD WINAPI startClient(LPVOID param) {
+//    initializeWinsock();
+//
+//    SOCKET clientSocket = createClientSocket();
+//    connectToServer(clientSocket, "127.0.0.1", 5061); // Local IP address and Load Balancer port
+//
+//    queue = init_queue2(100);
+//
+//    while (true) {
+//        // Main worker loop (add relevant code or logic here)
+//        handleCommunication(clientSocket);
+//    }
+//
+//    // Close the socket
+//    closesocket(clientSocket);
+//    WSACleanup();
+//}
 DWORD WINAPI startClient(LPVOID param) {
     initializeWinsock();
 
     SOCKET clientSocket = createClientSocket();
-    connectToServer(clientSocket, "127.0.0.1", 5061); // Local IP address and Load Balancer port
+    struct sockaddr_in serverAddress;
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(5061); // Port za server za rezultate
+    inet_pton(AF_INET, "127.0.0.1", &serverAddress.sin_addr);
 
+    // Pokušaj povezivanja dok server ne postane dostupan
+    while (connect(clientSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
+      
+        Sleep(10000); // Čekaj 1 sekundu pre ponovnog pokušaja
+    }
+
+    printf("Connected to results server\n");
+
+    // Inicijalizacija reda za rezultate
     queue = init_queue2(100);
 
+    // Glavna petlja za rukovanje komunikacijom
     while (true) {
-        // Main worker loop (add relevant code or logic here)
         handleCommunication(clientSocket);
     }
 
-    // Close the socket
+    // Zatvaranje soketa
     closesocket(clientSocket);
     WSACleanup();
+
+    return 0;
 }
+
+
 
 void deserializeQueueElementResult(char* buffer, QUEUEELEMENTRESULT* q) {
     char* ptr = buffer;

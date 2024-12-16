@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <winsock2.h>
+#include <conio.h>
 #include <ws2tcpip.h>
 #include "ClientWorkerCommunication.h"
 
@@ -53,6 +54,14 @@ int main() {
 
     printf("Connected to Load Balancer\n");
 
+  
+    hClientServer = CreateThread(NULL, 0, &startClient, NULL, 0, &hClientServerID);
+    if (hClientServer == NULL) {
+        fprintf(stderr, "Failed to create client thread for results server\n");
+        return EXIT_FAILURE;
+    }
+
+
     while (true) {
         // Slanje broja serveru
 
@@ -100,15 +109,17 @@ int main() {
             }
             printf("Range (%d, %d) sent to Load Balancer\n", min, max);
         }
-        int s;
-        getchar();  // Potrošnja novog reda pre unosa
+        //int s;
+        //getchar();  // Potrošnja novog reda pre unosa
         //printf("Stop input -1 :  ");
-        scanf_s("%d", &s);
-        if (s == -1) {
-            break;
-        }
+        //scanf_s("%d", &s);
+        //if (s == -1) {
+        //    break;
+        //}
+  
+        
     }
-
+  
     // Zatvaranje soketa
     closesocket(clientSocket);
     WSACleanup();

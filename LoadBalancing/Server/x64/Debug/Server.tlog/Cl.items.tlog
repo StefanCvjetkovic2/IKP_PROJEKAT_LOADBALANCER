@@ -1,6 +1,4 @@
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\AdminCommunication.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\AdminCommunication.obj
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\LBcommunication.obj
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\QueueResult.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\QueueResult.obj
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\Server.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\Server.obj
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\WorkerClientCommunication.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\WorkerClientCommunication.obj
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\WorkerQueue.cpp;C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\WorkerQueue.obj
+C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\AdminCommunication.cpp;C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\AdminCommunication.obj
+C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\LBcommunication.cpp;C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\LBcommunication.obj
+C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\Server.cpp;C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\Server.obj
+C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\WorkerClientCommunication.cpp;C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Server\x64\Debug\WorkerClientCommunication.obj

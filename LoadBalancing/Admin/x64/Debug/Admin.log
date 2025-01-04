@@ -1,6 +1,1 @@
-﻿  Admin.cpp
-  AdminWorkerCommunication.cpp
-C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\Admin\AdminWorkerCommunication.cpp(103,44): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
-  LINK : C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Admin.exe not found or not built by the last incremental link; performing full link
-  Admin.vcxproj -> C:\Users\NewUser\Desktop\IKP_URADJENO_SVE\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Admin.exe
+﻿  Admin.vcxproj -> C:\Users\Sasa\Desktop\IKP_PROJEKAT_LOADBALANCER\LoadBalancing\x64\Debug\Admin.exe

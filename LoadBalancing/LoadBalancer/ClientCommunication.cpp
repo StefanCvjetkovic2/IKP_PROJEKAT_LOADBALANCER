@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "QueueClinet.h"
+#include "../Common/QueueResults.h"
+#include "../Common/Queue.h"
 // Globalna promenljiva
 QUEUE* ClientQueue = NULL;
 

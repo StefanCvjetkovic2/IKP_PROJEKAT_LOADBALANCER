@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,17 +130,18 @@
   <ItemGroup>
     <ClCompile Include="AdminCommunication.cpp" />
     <ClCompile Include="LBcommunication.cpp" />
-    <ClCompile Include="QueueResult.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="WorkerClientCommunication.cpp" />
-    <ClCompile Include="WorkerQueue.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdminCommunication.h" />
     <ClInclude Include="LBcommunication.h" />
-    <ClInclude Include="Queue.h" />
-    <ClInclude Include="QueueResult.h" />
     <ClInclude Include="WorkerClientCommunication.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.vcxproj">
+      <Project>{2951a3f5-f155-4a28-9d95-e016f6112fd2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

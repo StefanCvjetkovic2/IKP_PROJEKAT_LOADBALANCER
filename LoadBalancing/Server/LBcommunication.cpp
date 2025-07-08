@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Queue.h"
 #include <iostream>
+#include "../Common/QueueResults.h"
+#include "../Common/Queue.h"
 using namespace std;
 
 #define THREAD_POOL_SIZE 100

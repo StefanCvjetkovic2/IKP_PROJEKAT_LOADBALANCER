@@ -71,7 +71,7 @@ int main() {
 
         if (strcmp(input, "r") == 0 || strcmp(input, "R") == 0) {
 
-            print_queue2(queue);
+            print_queue2(queuer);
         }
         else {
             // Pretpostavlja se da je unet broj

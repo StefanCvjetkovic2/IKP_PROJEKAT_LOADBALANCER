@@ -18,18 +18,12 @@
     <ClCompile Include="Clinet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ClientQueue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ClientWorkerCommunication.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientWorkerCommunication.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

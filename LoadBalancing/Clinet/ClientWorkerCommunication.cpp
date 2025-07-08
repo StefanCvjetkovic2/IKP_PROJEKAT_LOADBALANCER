@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ClientQueue.h"
 #include <iostream>
+#include "../Common/QueueResults.h"
 using namespace std;
 
-QUEUER* queue = NULL;
+QUEUER* queuer = NULL;
 
 
 // Inicijalizacija Winsock-a
@@ -59,7 +59,7 @@ void handleCommunication(SOCKET clientSocket) {
         deserializeQueueElementResult(buffer, &q);
 
 
-        enqueue2(queue, create_queue_element2(q.clientName, q.result));
+        enqueue2(queuer, create_queue_element2(q.clientName, q.result));
 
 
        // printf("Results recieved from workers:\n ");
@@ -111,7 +111,7 @@ DWORD WINAPI startClient(LPVOID param) {
     printf("Connected to results server\n");
 
     // Inicijalizacija reda za rezultate
-    queue = init_queue2(100);
+    queuer = init_queue2(100);
 
     // Glavna petlja za rukovanje komunikacijom
     while (true) {
